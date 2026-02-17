@@ -1,0 +1,13 @@
+@import "tailwindcss";
+
+:root {
+  --color-primary: #2563eb;
+  --color-border: #e5e7eb;
+  --radius-card: 12px;
+  --spacing-section: 24px;
+  --color-background: #f7f7f7;
+}
+
+body {
+  background-color: var(--color-background);
+}
