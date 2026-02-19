@@ -1,126 +1,120 @@
-import "../App.css";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { Menu, X } from "lucide-react";
+import Logo from "@/assets/logo-light.svg";
+
+const navLinks = [
+  { label: "Home", href: "/" },
+  { label: "About", href: "/about" },
+  { label: "Services", href: "/services" },
+  { label: "Contact Us", href: "/contact-us" },
+];
 
 const Navbar = () => {
-  const [open, setOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+  const [mobileOpen, setMobileOpen] = useState(false);
+
+  useEffect(() => {
+    const onScroll = () =>
+      setScrolled(window.scrollY > window.innerHeight * 0.5);
+    onScroll();
+    window.addEventListener("scroll", onScroll);
+    window.addEventListener("resize", onScroll);
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
+    };
+  }, []);
+
+  useEffect(() => {
+    document.body.style.overflow = mobileOpen ? "hidden" : "";
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [mobileOpen]);
+
   return (
-    <nav className="fixed top-0 left-0 w-full z-50 bg-transparent">
-      <div className="container mx-auto flex items-center justify-between py-4 px-6">
-        {/* Logo */}
-        <a href="/" className="flex items-center">
+    <nav
+      className={`fixed left-0 right-0 top-0 z-50 transition-all duration-300 ${
+        scrolled ? "bg-white/90 py-3 backdrop-blur-md" : "bg-transparent py-5"
+      }`}
+    >
+      <div className="container mx-auto flex max-w-7xl items-center justify-between px-6">
+        <a href="#home" className="flex items-center gap-2">
           <img
-            src="https://leap-pm.com/front/assets/img/logo-light.svg"
-            alt="logo"
-            className="h-8"
+            src={Logo}
+            alt="Leap Logo"
+            className={`w-auto transition-all duration-300 ${
+              scrolled ? "h-12" : "h-12 md:h-16"
+            }`}
           />
         </a>
 
-        {/* Desktop Menu */}
-        <ul className="hidden lg:flex items-center gap-8 font-bold tracking-tight text-white">
-          <li>
-            <a href="/" className="hover:text-primary transition">
-              Home
+        <div className="hidden items-center gap-8 md:flex">
+          {navLinks.map((link) => (
+            <a
+              key={link.label}
+              href={link.href}
+              className={`text-lg font-semibold transition-colors ${
+                scrolled
+                  ? "text-black hover:text-black/70"
+                  : "text-white hover:text-white/75"
+              }`}
+            >
+              {link.label}
             </a>
-          </li>
-          <li>
-            <a href="/about" className="hover:text-primary transition">
-              About
-            </a>
-          </li>
-          <li>
-            <a href="/services" className="hover:text-primary transition">
-              Services
-            </a>
-          </li>
-          <li>
-            <a href="/contact" className="hover:text-primary transition">
-              Contact
-            </a>
-          </li>
-        </ul>
+          ))}
+        </div>
 
-        {/* Mobile Button */}
-        <button onClick={() => setOpen(true)} className="lg:hidden text-white">
-          ☰
+        <button
+          type="button"
+          className={`relative z-[70] md:hidden ${scrolled || mobileOpen ? "text-black" : "text-white"}`}
+          onClick={() => setMobileOpen(!mobileOpen)}
+          aria-label="Toggle menu"
+        >
+          {mobileOpen ? <X size={28} /> : <Menu size={28} />}
         </button>
       </div>
 
-      {/* Mobile Menu */}
       <div
-        className={`
-          fixed top-0 left-0 h-full w-80 bg-[#111827]
-          transform transition-transform duration-300
-          ${open ? "translate-x-0" : "-translate-x-full"}
-          z-50
-        `}
+        className={`fixed inset-0 z-[60] md:hidden transition-opacity duration-300 ${
+          mobileOpen
+            ? "pointer-events-auto opacity-100"
+            : "pointer-events-none opacity-0"
+        }`}
+        aria-hidden={!mobileOpen}
       >
-        {/* Header */}
-        <div className="flex items-center justify-between p-6 border-b border-white/10">
-          <h3 className="text-white text-xl font-bold">LEAP PM</h3>
-          <button
-            onClick={() => setOpen(false)}
-            className="text-white text-2xl"
-          >
-            ×
-          </button>
-        </div>
+        <div
+          className="absolute inset-0 bg-black/35"
+          onClick={() => setMobileOpen(false)}
+        />
 
-        {/* Links */}
-        <ul className="flex flex-col gap-6 p-6 text-white font-bold">
-          <li>
-            <a href="/" onClick={() => setOpen(false)}>
-              Home
+        <div
+          className={`absolute left-0 top-0 h-screen w-full bg-white/95 backdrop-blur-md transition-transform duration-500 ease-out ${
+            mobileOpen ? "translate-x-0" : "-translate-x-full"
+          }`}
+        >
+          <div className="flex h-full flex-col justify-center gap-8 px-8">
+            <a
+              href="/"
+              className="mx-auto mb-2 flex items-center justify-center"
+            >
+              <img src={Logo} alt="Leap Logo" className="h-14 w-auto" />
             </a>
-          </li>
-          <li>
-            <a href="/about" onClick={() => setOpen(false)}>
-              About
-            </a>
-          </li>
-          <li>
-            <a href="/services" onClick={() => setOpen(false)}>
-              Services
-            </a>
-          </li>
-          <li>
-            <a href="/contact" onClick={() => setOpen(false)}>
-              Contact
-            </a>
-          </li>
-        </ul>
-
-        {/* Footer */}
-        <div className="mt-auto p-6 text-white border-t border-white/10">
-          <a href="mailto:info@leap-pm.com" className="block mb-2">
-            info@leap-pm.com
-          </a>
-
-          <a href="tel:+966532407726" className="block text-gray-400">
-            +966532407726
-          </a>
-
-          <div className="flex gap-4 mt-4">
-            <a href="#" className="hover:text-primary transition">
-              LinkedIn
-            </a>
-            <a href="#" className="hover:text-primary transition">
-              Facebook
-            </a>
-            <a href="#" className="hover:text-primary transition">
-              YouTube
-            </a>
+            {navLinks.map((link) => (
+              <a
+                key={link.label}
+                href={link.href}
+                className="text-3xl font-semibold text-black transition-colors hover:text-black/70"
+                onClick={() => setMobileOpen(false)}
+              >
+                {link.label}
+              </a>
+            ))}
           </div>
         </div>
       </div>
-
-      {/* Overlay */}
-      {open && (
-        <div
-          onClick={() => setOpen(false)}
-          className="fixed inset-0 bg-black/50 z-40"
-        />
-      )}
     </nav>
   );
 };
+
 export default Navbar;

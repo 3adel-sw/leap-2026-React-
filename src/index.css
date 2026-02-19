@@ -1,1 +1,20 @@
 @import "tailwindcss";
+
+@import "swiper/css";
+@import "swiper/css/navigation";
+@import "swiper/css/pagination";
+
+html {
+  scroll-behavior: smooth;
+}
+
+:root {
+  --color-primary: #6fc2ea;
+  --color-secondary: #375fa7;
+  --color-fill: #385fa8;
+  --color-border: #e5e7eb;
+}
+
+.swiper-navigation-icon {
+  display: none !important;
+}
